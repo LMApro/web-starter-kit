@@ -1,0 +1,9 @@
+$color: green;
+$color2: red;
+p {
+	color: $color;
+}
+
+.this_will_be_deleted {
+	background-color: $color2;
+}

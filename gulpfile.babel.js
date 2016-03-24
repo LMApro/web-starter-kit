@@ -68,7 +68,8 @@ gulp.task('images', () =>
 // Copy all files at the root level (app)
 gulp.task('copy', () =>
   gulp.src([
-    'app/*',
+    'app/images',
+    'app/fonts',
     '!app/*.html',
     'node_modules/apache-server-configs/dist/.htaccess'
   ], {
@@ -92,22 +93,19 @@ gulp.task('styles', () => {
   ];
 
   // For best performance, don't add Sass partials to `gulp.src`
-  return gulp.src([
-    'app/styles/**/*.scss',
-    'app/styles/**/*.css'
-  ])
-    .pipe($.newer('.tmp/styles'))
-    .pipe($.sourcemaps.init())
+  return gulp.src(
+    'app/scss/**/*.scss'
+    // ,'app/styles/**/*.css'
+  )
+    .pipe($.newer('app/styles'))
     .pipe($.sass({
       precision: 10
     }).on('error', $.sass.logError))
     .pipe($.autoprefixer(AUTOPREFIXER_BROWSERS))
-    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(gulp.dest('app/styles'))
     // Concatenate and minify styles
     .pipe($.if('*.css', $.cssnano()))
-    .pipe($.size({title: 'styles'}))
-    .pipe($.sourcemaps.write('./'))
-    .pipe(gulp.dest('dist/styles'));
+    .pipe($.size({title: 'styles'}));
 });
 
 // Concatenate and minify JavaScript. Optionally transpiles ES2015 code to ES5.
@@ -118,14 +116,14 @@ gulp.task('scripts', () =>
       // Note: Since we are not using useref in the scripts build pipeline,
       //       you need to explicitly list your scripts here in the right order
       //       to be correctly concatenated
-      './app/scripts/main.js'
+      'app/scripts/main.js'
       // Other scripts
     ])
-      .pipe($.newer('.tmp/scripts'))
+      .pipe($.newer('app/scripts'))
       .pipe($.sourcemaps.init())
       .pipe($.babel())
       .pipe($.sourcemaps.write())
-      .pipe(gulp.dest('.tmp/scripts'))
+      .pipe(gulp.dest('app/scripts'))
       .pipe($.concat('main.min.js'))
       .pipe($.uglify({preserveComments: 'some'}))
       // Output files
@@ -137,7 +135,7 @@ gulp.task('scripts', () =>
 // Scan your HTML for assets & optimize them
 gulp.task('html', () => {
   return gulp.src('app/**/*.html')
-    .pipe($.useref({searchPath: '{.tmp,app}'}))
+    .pipe($.useref())
     // Remove any unused CSS
     .pipe($.if('*.css', $.uncss({
       html: [
@@ -172,24 +170,25 @@ gulp.task('html', () => {
 gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 
 // Watch files for changes & reload
-gulp.task('run', ['scripts', 'styles'], () => {
-  browserSync({
-    notify: false,
+gulp.task('run', ['styles'], () => {
+  browserSync.init({
     // Customize the Browsersync console logging prefix
     logPrefix: 'MA',
     // Allow scroll syncing across breakpoints
-    scrollElementMapping: ['main', '.mdl-layout'],
+    // scrollElementMapping: ['main', '.mdl-layout'],
     // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
-    server: ['.tmp', 'app'],
-    port: 3000,
+    server: {
+      baseDir: ['app']
+    },
+    port: 8009,
     ui: { port: 13093 }
   });
 
   gulp.watch(['app/**/*.html'], reload);
-  gulp.watch(['app/styles/**/*.{scss,css}'], ['styles', reload]);
+  gulp.watch(['app/scss/**/*.scss'], ['styles', reload]);
   gulp.watch(['app/scripts/**/*.js'], ['lint', 'scripts']);
   gulp.watch(['app/images/**/*'], reload);
 });
@@ -200,14 +199,14 @@ gulp.task('run:dist', ['default'], () =>
     notify: false,
     logPrefix: 'MA',
     // Allow scroll syncing across breakpoints
-    scrollElementMapping: ['main', '.mdl-layout'],
+    // scrollElementMapping: ['main', '.mdl-layout'],
     // Run as an https by uncommenting 'https: true'
     // Note: this uses an unsigned certificate which on first access
     //       will present a certificate warning in the browser.
     // https: true,
     server: 'dist',
-    port: 3001,
-    tunnel: "makatz"
+    port: 8010,
+    tunnel: "makatz1309"
   })
 );
 
