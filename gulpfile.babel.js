@@ -44,7 +44,8 @@ gulp.task('lint', () => {
     "rules": {
       "linebreak-style": 0,
       "no-unused-vars": 0, // this one only for testing gulp
-      "eol-last": 0
+      "eol-last": 0,
+      "no-trailing-spaces": 0
     }
   };
   gulp.src('app/scripts/**/*.js')
