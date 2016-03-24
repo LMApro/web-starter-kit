@@ -18,15 +18,11 @@
 | Cross-device Synchronization           | Synchronize clicks, scrolls, forms and live-reload across multiple devices as you edit your project. Powered by [BrowserSync](http://browsersync.io). (Run `gulp run` and open up the IP provided on other devices on your network)                       |
 | Offline support                     | Thanks to our baked in [Service Worker](http://www.html5rocks.com/en/tutorials/service-worker/introduction/) [pre-caching](https://github.com/google/web-starter-kit/blob/master/gulpfile.babel.js#L226), sites deploying `dist` to a HTTPS domain will enjoy offline support. This is made possible by [sw-precache](https://github.com/GoogleChrome/sw-precache/).                                                                                                                                              |
 | PageSpeed Insights                     | Web performance metrics showing how well your site performs on mobile and desktop (Run `gulp pagespeed`)                                                                                                                                                    |
+| Google Analytics                     | Get the data you need to make intelligent marketing and business decisions. In `index.html` change `UA-XXXXX-X` to be your site's ID.                                                                                                                                                   |
 
 ## Quickstart
 
 [Download](https://github.com/google/web-starter-kit/releases/latest) the kit or clone this repository and build on what is included in the `app` directory.
-
-There are two HTML starting points, from which you can choose:
-
-- `index.html` - the default starting point, containing Material Design layout.
-- `basic.html` - no layout, but still includes our minimal mobile best-practices
 
 Be sure to look over the [installation docs](docs/install.md) to verify your environment is prepared to run WSK.
 Once you have verified that your system can run WSK, check out the [commands](docs/commands.md) available to get started.
