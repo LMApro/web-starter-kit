@@ -38,19 +38,28 @@ const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
 // Lint JavaScript
-gulp.task('lint', () =>
+gulp.task('lint', () => {
+  const eslintOptions = {
+    "rules": {
+      "linebreak-style": 0
+    }
+  };
   gulp.src('app/scripts/**/*.js')
-    .pipe($.eslint())
+    .pipe($.eslint(eslintOptions))
     .pipe($.eslint.format())
     .pipe($.if(!browserSync.active, $.eslint.failOnError()))
-);
+});
 
 // Optimize images
 gulp.task('images', () =>
   gulp.src('app/images/**/*')
     .pipe($.cache($.imagemin({
       progressive: true,
-      interlaced: true
+      interlaced: true,
+      svgoPlugins: [
+          {removeViewBox: false},
+          {cleanupIDs: false}
+      ]
     })))
     .pipe(gulp.dest('dist/images'))
     .pipe($.size({title: 'images'}))
@@ -163,11 +172,11 @@ gulp.task('html', () => {
 gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 
 // Watch files for changes & reload
-gulp.task('serve', ['scripts', 'styles'], () => {
+gulp.task('run', ['scripts', 'styles'], () => {
   browserSync({
     notify: false,
     // Customize the Browsersync console logging prefix
-    logPrefix: 'WSK',
+    logPrefix: 'MA',
     // Allow scroll syncing across breakpoints
     scrollElementMapping: ['main', '.mdl-layout'],
     // Run as an https by uncommenting 'https: true'
@@ -175,7 +184,8 @@ gulp.task('serve', ['scripts', 'styles'], () => {
     //       will present a certificate warning in the browser.
     // https: true,
     server: ['.tmp', 'app'],
-    port: 3000
+    port: 3000,
+    ui: { port: 13093 }
   });
 
   gulp.watch(['app/**/*.html'], reload);
@@ -185,10 +195,10 @@ gulp.task('serve', ['scripts', 'styles'], () => {
 });
 
 // Build and serve the output from the dist build
-gulp.task('serve:dist', ['default'], () =>
+gulp.task('run:dist', ['default'], () =>
   browserSync({
     notify: false,
-    logPrefix: 'WSK',
+    logPrefix: 'MA',
     // Allow scroll syncing across breakpoints
     scrollElementMapping: ['main', '.mdl-layout'],
     // Run as an https by uncommenting 'https: true'
@@ -196,7 +206,8 @@ gulp.task('serve:dist', ['default'], () =>
     //       will present a certificate warning in the browser.
     // https: true,
     server: 'dist',
-    port: 3001
+    port: 3001,
+    tunnel: "makatz"
   })
 );
 
