@@ -1,9 +1,17 @@
-$color: green;
-$color2: red;
+$color: #444;
+$color2: #49e;
+
+.demo-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+}
+
 p {
 	color: $color;
 }
 
-.this_will_be_deleted {
-	background-color: $color2;
+h3 {
+	color: $color2;
 }
+

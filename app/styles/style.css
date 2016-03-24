@@ -1,5 +1,10 @@
-p {
-  color: green; }
+.demo-header {
+  position: fixed;
+  top: 0;
+  left: 0; }
 
-.this_will_be_deleted {
-  background-color: red; }
+p {
+  color: #444; }
+
+h3 {
+  color: #49e; }
