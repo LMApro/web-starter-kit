@@ -31,6 +31,7 @@ import runSequence from 'run-sequence';
 import browserSync from 'browser-sync';
 import swPrecache from 'sw-precache';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import ngrok from 'ngrok';
 import {output as pagespeed} from 'psi';
 import pkg from './package.json';
 
@@ -41,7 +42,9 @@ const reload = browserSync.reload;
 gulp.task('lint', () => {
   const eslintOptions = {
     "rules": {
-      "linebreak-style": 0
+      "linebreak-style": 0,
+      "no-unused-vars": 0, // this one only for testing gulp
+      "eol-last": 0
     }
   };
   gulp.src('app/scripts/**/*.js')
@@ -51,24 +54,24 @@ gulp.task('lint', () => {
 });
 
 // Optimize images
-gulp.task('images', () =>
-  gulp.src('app/images/**/*')
-    .pipe($.cache($.imagemin({
-      progressive: true,
-      interlaced: true,
-      svgoPlugins: [
-          {removeViewBox: false},
-          {cleanupIDs: false}
-      ]
-    })))
+gulp.task('images', () => {
+  const imageminOptions = {
+    progressive: true,
+    interlaced: true,
+    svgoPlugins: [
+        {removeViewBox: false},
+        {cleanupIDs: false}
+    ]
+  };
+  return gulp.src('app/images/**/*')
+    .pipe($.cache($.imagemin(imageminOptions)))
     .pipe(gulp.dest('dist/images'))
     .pipe($.size({title: 'images'}))
-);
+});
 
 // Copy all files at the root level (app)
-gulp.task('copy', () =>
-  gulp.src([
-    'app/images',
+gulp.task('copy', () => {
+  return gulp.src([
     'app/fonts',
     '!app/*.html',
     'node_modules/apache-server-configs/dist/.htaccess'
@@ -76,7 +79,7 @@ gulp.task('copy', () =>
     dot: true
   }).pipe(gulp.dest('dist'))
     .pipe($.size({title: 'copy'}))
-);
+});
 
 // Compile and automatically prefix stylesheets
 gulp.task('styles', () => {
@@ -133,36 +136,42 @@ gulp.task('scripts', () =>
 );
 
 // Scan your HTML for assets & optimize them
-gulp.task('html', () => {
+gulp.task('useref', () => {
+  const htmlminOptions = {
+    removeComments: true,
+    collapseWhitespace: true,
+    collapseBooleanAttributes: true,
+    removeAttributeQuotes: true,
+    removeRedundantAttributes: true,
+    removeEmptyAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    removeOptionalTags: true
+  };
+
+  const uncssOptions = {
+    html: [
+      'app/index.html'
+    ],
+    // CSS Selectors for UnCSS to ignore
+    ignore: []
+  };
+
   return gulp.src('app/**/*.html')
     .pipe($.useref())
     // Remove any unused CSS
-    .pipe($.if('*.css', $.uncss({
-      html: [
-        'app/index.html'
-      ],
-      // CSS Selectors for UnCSS to ignore
-      ignore: []
-    })))
+    .pipe($.if('*.css', $.uncss(uncssOptions)))
 
     // Concatenate and minify styles
     // In case you are still using useref build blocks
     .pipe($.if('*.css', $.cssnano()))
 
     // Minify any HTML
-    .pipe($.if('*.html', $.htmlmin({
-      removeComments: true,
-      collapseWhitespace: true,
-      collapseBooleanAttributes: true,
-      removeAttributeQuotes: true,
-      removeRedundantAttributes: true,
-      removeEmptyAttributes: true,
-      removeScriptTypeAttributes: true,
-      removeStyleLinkTypeAttributes: true,
-      removeOptionalTags: true
-    })))
+    .pipe($.if('*.html', $.htmlmin(htmlminOptions)))
     // Output files
     .pipe($.if('*.html', $.size({title: 'html', showFiles: true})))
+
+    .pipe($.if('*.js', $.uglify()))
     .pipe(gulp.dest('dist'));
 });
 
@@ -189,12 +198,12 @@ gulp.task('run', ['styles'], () => {
 
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/scss/**/*.scss'], ['styles', reload]);
-  gulp.watch(['app/scripts/**/*.js'], ['lint', 'scripts']);
+  gulp.watch(['app/scripts/**/*.js'], ['lint', reload]);
   gulp.watch(['app/images/**/*'], reload);
 });
 
 // Build and serve the output from the dist build
-gulp.task('run:dist', ['default'], () =>
+gulp.task('run:dist', ['default'], () => {
   browserSync({
     notify: false,
     logPrefix: 'MA',
@@ -205,16 +214,33 @@ gulp.task('run:dist', ['default'], () =>
     //       will present a certificate warning in the browser.
     // https: true,
     server: 'dist',
-    port: 8010,
-    tunnel: "makatz1309"
-  })
-);
+    port: 8010
+  });
+  ngrok.connect(8010, (err, url) => {
+    var urlLogInfo = `|   Your web app is currently available on ${url}   |`;
+    var length = urlLogInfo.length;
+    String.prototype.repeat = function(times){
+        var result="";
+        var pattern=this;
+        while (times > 0) {
+            if (times&1)
+                result+=pattern;
+            times>>=1;
+            pattern+=pattern;
+        }
+        return result;
+    };
+    console.log("=".repeat(length));
+    console.log(urlLogInfo);
+    console.log("=".repeat(length));
+  });
+});
 
 // Build production files, the default task
 gulp.task('default', ['clean'], cb =>
   runSequence(
     'styles',
-    ['lint', 'html', 'scripts', 'images', 'copy'],
+    ['lint', 'useref', 'images', 'copy'],
     'generate-service-worker',
     cb
   )
