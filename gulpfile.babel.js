@@ -41,11 +41,27 @@ const reload = browserSync.reload;
 // Lint JavaScript
 gulp.task('lint', () => {
   const eslintOptions = {
+    "env": {
+	    "browser": true,
+	    "node": true,
+	    "es6": true,
+	    "jest": true
+	  },
     "rules": {
       "linebreak-style": 0,
-      "no-unused-vars": 0, // this one only for testing gulp
+      "no-unused-vars": 0,
+      "indent": 0,
+      "no-mixed-spaces-and-tabs": 0,
       "eol-last": 0,
-      "no-trailing-spaces": 0
+      "require-jsdoc": 0,
+      "no-trailing-spaces": 0,
+      "max-len": 0,
+      "quotes": 0,
+      "no-multiple-empty-lines": 0,
+      "no-multi-spaces": 0,
+      "one-var": 0,
+      "spaced-comment": 0,
+      "arrow-parens": 0
     }
   };
   gulp.src('app/scripts/**/*.js')
@@ -85,10 +101,10 @@ gulp.task('copy', () => {
 // Compile and automatically prefix stylesheets
 gulp.task('styles', () => {
   const AUTOPREFIXER_BROWSERS = [
-    'ie >= 10',
+    'ie >= 9',
     'ie_mob >= 10',
-    'ff >= 30',
-    'chrome >= 34',
+    'ff >= 26',
+    'chrome >= 30',
     'safari >= 7',
     'opera >= 23',
     'ios >= 7',
@@ -183,7 +199,7 @@ gulp.task('clean', () => del(['.tmp', 'dist/*', '!dist/.git'], {dot: true}));
 gulp.task('run', ['styles'], () => {
   browserSync.init({
     // Customize the Browsersync console logging prefix
-    logPrefix: 'MA',
+    logPrefix: 'DEV',
     // Allow scroll syncing across breakpoints
     // scrollElementMapping: ['main', '.mdl-layout'],
     // Run as an https by uncommenting 'https: true'
@@ -196,6 +212,24 @@ gulp.task('run', ['styles'], () => {
     port: 8009,
     ui: { port: 13093 }
   });
+  ngrok.connect(8009, (err, url) => {
+    var urlLogInfo = `|   Your web app is currently available on ${url}   |`;
+    var length = urlLogInfo.length;
+    String.prototype.repeat = function(times){
+        var result="";
+        var pattern=this;
+        while (times > 0) {
+            if (times&1)
+                result+=pattern;
+            times>>=1;
+            pattern+=pattern;
+        }
+        return result;
+    };
+    console.log("=".repeat(length));
+    console.log(urlLogInfo);
+    console.log("=".repeat(length));
+  });
 
   gulp.watch(['app/**/*.html'], reload);
   gulp.watch(['app/scss/**/*.scss'], ['styles', reload]);
@@ -207,7 +241,7 @@ gulp.task('run', ['styles'], () => {
 gulp.task('run:dist', ['default'], () => {
   browserSync({
     notify: false,
-    logPrefix: 'MA',
+    logPrefix: 'DIST',
     // Allow scroll syncing across breakpoints
     // scrollElementMapping: ['main', '.mdl-layout'],
     // Run as an https by uncommenting 'https: true'
