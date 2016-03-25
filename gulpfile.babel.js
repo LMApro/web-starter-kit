@@ -38,6 +38,24 @@ import pkg from './package.json';
 const $ = gulpLoadPlugins();
 const reload = browserSync.reload;
 
+function logUrl(urlLogInfo) {
+	var length = urlLogInfo.length;
+	String.prototype.repeat = function(times){
+        var result="";
+        var pattern=this;
+        while (times > 0) {
+            if (times&1)
+                result+=pattern;
+            times>>=1;
+            pattern+=pattern;
+        }
+        return result;
+    };
+    console.log("=".repeat(length));
+    console.log(urlLogInfo);
+    console.log("=".repeat(length));
+}
+
 // Lint JavaScript
 gulp.task('lint', () => {
   const eslintOptions = {
@@ -112,10 +130,9 @@ gulp.task('styles', () => {
     'bb >= 10'
   ];
 
-  // For best performance, don't add Sass partials to `gulp.src`
+  // For best performance, don't add Sass partials to `gulp.src`, only add SCSS root file
   return gulp.src(
-    'app/scss/**/*.scss'
-    // ,'app/styles/**/*.css'
+    'app/scss/main.scss'
   )
     .pipe($.newer('app/styles'))
     .pipe($.sass({
@@ -213,22 +230,7 @@ gulp.task('run', ['styles'], () => {
     ui: { port: 13093 }
   });
   ngrok.connect(8009, (err, url) => {
-    var urlLogInfo = `|   Your web app is currently available on ${url}   |`;
-    var length = urlLogInfo.length;
-    String.prototype.repeat = function(times){
-        var result="";
-        var pattern=this;
-        while (times > 0) {
-            if (times&1)
-                result+=pattern;
-            times>>=1;
-            pattern+=pattern;
-        }
-        return result;
-    };
-    console.log("=".repeat(length));
-    console.log(urlLogInfo);
-    console.log("=".repeat(length));
+    logUrl(`|   Your web app is currently available on ${url}   |`);
   });
 
   gulp.watch(['app/**/*.html'], reload);
@@ -252,22 +254,7 @@ gulp.task('run:dist', ['default'], () => {
     port: 8010
   });
   ngrok.connect(8010, (err, url) => {
-    var urlLogInfo = `|   Your web app is currently available on ${url}   |`;
-    var length = urlLogInfo.length;
-    String.prototype.repeat = function(times){
-        var result="";
-        var pattern=this;
-        while (times > 0) {
-            if (times&1)
-                result+=pattern;
-            times>>=1;
-            pattern+=pattern;
-        }
-        return result;
-    };
-    console.log("=".repeat(length));
-    console.log(urlLogInfo);
-    console.log("=".repeat(length));
+    logUrl(`|   Your web app is currently available on ${url}   |`);
   });
 });
 
