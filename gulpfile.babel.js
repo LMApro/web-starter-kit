@@ -31,7 +31,7 @@ import runSequence from 'run-sequence';
 import browserSync from 'browser-sync';
 import swPrecache from 'sw-precache';
 import gulpLoadPlugins from 'gulp-load-plugins';
-// import ngrok from 'ngrok';
+import ngrok from 'ngrok';
 import {output as pagespeed} from 'psi';
 import pkg from './package.json';
 
@@ -97,8 +97,13 @@ gulp.task('images', () => {
 // Copy all files at the root level (app)
 gulp.task('copy', () => {
 	return gulp.src([
-		'app/fonts',
-		'!app/*.html',
+		'app/**/*',
+		'app/fonts/**/*',
+		'!app/index.html',
+		'!app/scripts',
+		'!app/images',
+		'!app/scss',
+		'!app/styles',
 		'node_modules/apache-server-configs/dist/.htaccess'
 		], {dot: true})
 			.pipe(gulp.dest('dist'))
@@ -136,11 +141,7 @@ gulp.task('styles', () => {
 // to enables ES2015 support remove the line `"only": "gulpfile.babel.js",` in the
 // `.babelrc` file.
 gulp.task('scripts', () => {
-	 gulp.src([
-		// Note: Since we are not using useref in the scripts build pipeline,
-		//       you need to explicitly list your scripts here in the right order
-		//       to be correctly concatenated
-		'app/scripts/main.js'
+	 gulp.src(['app/scripts/main.js'
 		// Other scripts
 	 ])
 		.pipe($.newer('app/scripts'))
@@ -204,6 +205,8 @@ gulp.task('run', ['styles'], () => {
 	browserSync.init({
 		// Customize the Browsersync console logging prefix
 		logPrefix: 'DEV',
+		online: false,
+
 		// Allow scroll syncing across breakpoints
 		// scrollElementMapping: ['main', '.mdl-layout'],
 		// Run as an https by uncommenting 'https: true'
@@ -214,9 +217,11 @@ gulp.task('run', ['styles'], () => {
 		port: 8009,
 		ui: { port: 13093 }
 	});
-	// ngrok.connect(8009, (err, url) => {
-	//   logUrl(`|   Your web app is currently available on ${url}   |`);
-	// });
+	ngrok.connect(8009, (err, url) => {
+	  	if (!err) {
+			logUrl(`|   Your web app is currently available on ${url}   |`);
+	  	}
+	});
 
 	gulp.watch(['app/**/*.html'], reload);
 	gulp.watch(['app/scss/**/*.scss'], ['styles', reload]);
@@ -226,28 +231,54 @@ gulp.task('run', ['styles'], () => {
 
 // Build and serve the output from the dist build
 gulp.task('run:dist', ['default'], () => {
-  browserSync({
-	 notify: false,
-	 logPrefix: 'DIST',
-	 // Allow scroll syncing across breakpoints
-	 // scrollElementMapping: ['main', '.mdl-layout'],
-	 // Run as an https by uncommenting 'https: true'
-	 // Note: this uses an unsigned certificate which on first access
-	 //       will present a certificate warning in the browser.
-	 // https: true,
-	 server: 'dist',
-	 port: 8010
-  });
-  // ngrok.connect(8010, (err, url) => {
-  //   logUrl(`|   Your web app is currently available on ${url}   |`);
-  // });
+  	browserSync({
+	 	notify: false,
+	 	online: false,
+	 	logPrefix: 'DIST',
+	 	// Allow scroll syncing across breakpoints
+	 	// scrollElementMapping: ['main', '.mdl-layout'],
+	 	// Run as an https by uncommenting 'https: true'
+	 	// Note: this uses an unsigned certificate which on first access
+	 	//       will present a certificate warning in the browser.
+	 	// https: true,
+	 	server: 'dist',
+	 	port: 8010
+  	});
+  	ngrok.connect(8010, (err, url) => {
+  	  	if (!err) {
+  	  		logUrl(`|   Your web app is currently available on ${url}   |`);
+  	  	}
+  	});
+});
+
+// Run the production version without rebuilding it (you need to make sure that it's already built)
+gulp.task('run-only', () => {
+  	browserSync({
+	 	notify: false,
+	 	online: false,
+	 	logPrefix: 'DIST',
+	 	// Allow scroll syncing across breakpoints
+	 	// scrollElementMapping: ['main', '.mdl-layout'],
+	 	// Run as an https by uncommenting 'https: true'
+	 	// Note: this uses an unsigned certificate which on first access
+	 	//       will present a certificate warning in the browser.
+	 	// https: true,
+	 	server: 'dist',
+	 	port: 8011
+  	});
+  	ngrok.connect(8011, (err, url) => {
+  	  	if (!err) {
+  	  		logUrl(`|   Your web app is currently available on ${url}   |`);
+  	  	}
+  	});
 });
 
 // Build production files, the default task
 gulp.task('default', ['clean'], cb => {
 	runSequence(
 		'styles',
-		['lint', 'useref', 'images', 'copy'],
+		['lint', 'useref', 'images'],
+		'copy',
 		'generate-service-worker',
 		cb
 	);
