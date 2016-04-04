@@ -71,7 +71,7 @@ gulp.task('lint', () => {
 			"arrow-parens": 0
 		}
 	};
-	gulp.src('app/scripts/**/*.js')
+	gulp.src(['app/scripts/**/*.js', '!app/scripts/**/*.min.js'])
 		.pipe($.eslint(eslintOptions))
 		.pipe($.eslint.format())
 		.pipe($.if(!browserSync.active, $.eslint.failOnError()));

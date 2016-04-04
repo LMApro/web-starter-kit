@@ -1,0 +1,141 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'i',
+1 verbose cli   '-',
+1 verbose cli   'g',
+1 verbose cli   'typings' ]
+2 info using npm@3.6.0
+3 info using node@v5.5.0
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly fetchPackageMetaData -
+8 silly fetchPackageMetaData g
+9 silly fetchPackageMetaData typings
+10 silly fetchOtherPackageData -
+11 silly cache add args [ '-', null ]
+12 verbose cache add spec -
+13 silly fetchNamedPackageData g
+14 silly mapToRegistry name g
+15 silly mapToRegistry using default registry
+16 silly mapToRegistry registry https://registry.npmjs.org/
+17 silly mapToRegistry uri https://registry.npmjs.org/g
+18 silly fetchNamedPackageData typings
+19 silly mapToRegistry name typings
+20 silly mapToRegistry using default registry
+21 silly mapToRegistry registry https://registry.npmjs.org/
+22 silly mapToRegistry uri https://registry.npmjs.org/typings
+23 silly cache add parsed spec Result {
+23 silly cache add   raw: '-',
+23 silly cache add   scope: null,
+23 silly cache add   name: null,
+23 silly cache add   rawSpec: '-',
+23 silly cache add   spec: 'E:\\Projects\\HTML5\\wsk-example\\-',
+23 silly cache add   type: 'local' }
+24 verbose request uri https://registry.npmjs.org/g
+25 verbose request no auth needed
+26 info attempt registry request try #1 at 8:24:22 PM
+27 verbose request id ba6d25abbb67c319
+28 http request GET https://registry.npmjs.org/g
+29 verbose request uri https://registry.npmjs.org/typings
+30 verbose request no auth needed
+31 info attempt registry request try #1 at 8:24:22 PM
+32 http request GET https://registry.npmjs.org/typings
+33 error addLocal Could not install E:\Projects\HTML5\wsk-example\-
+34 silly fetchPackageMetaData Error: ENOENT: no such file or directory, open 'E:\Projects\HTML5\wsk-example\-'
+34 silly fetchPackageMetaData     at Error (native)
+34 silly fetchPackageMetaData  error for - { [Error: ENOENT: no such file or directory, open 'E:\Projects\HTML5\wsk-example\-']
+34 silly fetchPackageMetaData   errno: -4058,
+34 silly fetchPackageMetaData   code: 'ENOENT',
+34 silly fetchPackageMetaData   syscall: 'open',
+34 silly fetchPackageMetaData   path: 'E:\\Projects\\HTML5\\wsk-example\\-' }
+35 http 200 https://registry.npmjs.org/g
+36 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+36 verbose headers   etag: '"8AYIUDSUHLGXZT7X52XKA2O0S"',
+36 verbose headers   'content-type': 'application/json',
+36 verbose headers   'cache-control': 'max-age=300',
+36 verbose headers   'content-length': '6814',
+36 verbose headers   'accept-ranges': 'bytes',
+36 verbose headers   date: 'Sun, 27 Mar 2016 13:24:36 GMT',
+36 verbose headers   via: '1.1 varnish',
+36 verbose headers   age: '0',
+36 verbose headers   connection: 'keep-alive',
+36 verbose headers   'x-served-by': 'cache-hkg6823-HKG',
+36 verbose headers   'x-cache': 'MISS',
+36 verbose headers   'x-cache-hits': '0',
+36 verbose headers   'x-timer': 'S1459085075.508629,VS0,VE820',
+36 verbose headers   vary: 'Accept' }
+37 silly get cb [ 200,
+37 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+37 silly get     etag: '"8AYIUDSUHLGXZT7X52XKA2O0S"',
+37 silly get     'content-type': 'application/json',
+37 silly get     'cache-control': 'max-age=300',
+37 silly get     'content-length': '6814',
+37 silly get     'accept-ranges': 'bytes',
+37 silly get     date: 'Sun, 27 Mar 2016 13:24:36 GMT',
+37 silly get     via: '1.1 varnish',
+37 silly get     age: '0',
+37 silly get     connection: 'keep-alive',
+37 silly get     'x-served-by': 'cache-hkg6823-HKG',
+37 silly get     'x-cache': 'MISS',
+37 silly get     'x-cache-hits': '0',
+37 silly get     'x-timer': 'S1459085075.508629,VS0,VE820',
+37 silly get     vary: 'Accept' } ]
+38 verbose get saving g to C:\Users\makatz\AppData\Roaming\npm-cache\registry.npmjs.org\g\.cache.json
+39 verbose correctMkdir C:\Users\makatz\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+40 http 200 https://registry.npmjs.org/typings
+41 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+41 verbose headers   etag: '"7WWNPUFWC73VTZJ5QDRGCNL48"',
+41 verbose headers   'content-type': 'application/json',
+41 verbose headers   'cache-control': 'max-age=300',
+41 verbose headers   'content-length': '158606',
+41 verbose headers   'accept-ranges': 'bytes',
+41 verbose headers   date: 'Sun, 27 Mar 2016 13:24:36 GMT',
+41 verbose headers   via: '1.1 varnish',
+41 verbose headers   age: '0',
+41 verbose headers   connection: 'keep-alive',
+41 verbose headers   'x-served-by': 'cache-hkg6825-HKG',
+41 verbose headers   'x-cache': 'HIT',
+41 verbose headers   'x-cache-hits': '1',
+41 verbose headers   'x-timer': 'S1459085075.505066,VS0,VE912',
+41 verbose headers   vary: 'Accept' }
+42 silly get cb [ 200,
+42 silly get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+42 silly get     etag: '"7WWNPUFWC73VTZJ5QDRGCNL48"',
+42 silly get     'content-type': 'application/json',
+42 silly get     'cache-control': 'max-age=300',
+42 silly get     'content-length': '158606',
+42 silly get     'accept-ranges': 'bytes',
+42 silly get     date: 'Sun, 27 Mar 2016 13:24:36 GMT',
+42 silly get     via: '1.1 varnish',
+42 silly get     age: '0',
+42 silly get     connection: 'keep-alive',
+42 silly get     'x-served-by': 'cache-hkg6825-HKG',
+42 silly get     'x-cache': 'HIT',
+42 silly get     'x-cache-hits': '1',
+42 silly get     'x-timer': 'S1459085075.505066,VS0,VE912',
+42 silly get     vary: 'Accept' } ]
+43 verbose get saving typings to C:\Users\makatz\AppData\Roaming\npm-cache\registry.npmjs.org\typings\.cache.json
+44 verbose correctMkdir C:\Users\makatz\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+45 silly rollbackFailedOptional Starting
+46 silly rollbackFailedOptional Finishing
+47 silly runTopLevelLifecycles Starting
+48 silly runTopLevelLifecycles Finishing
+49 silly install printInstalled
+50 verbose stack Error: ENOENT: no such file or directory, open 'E:\Projects\HTML5\wsk-example\-'
+50 verbose stack     at Error (native)
+51 verbose cwd E:\Projects\HTML5\wsk-example
+52 error Windows_NT 6.1.7601
+53 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "i" "-" "g" "typings"
+54 error node v5.5.0
+55 error npm  v3.6.0
+56 error path E:\Projects\HTML5\wsk-example\-
+57 error code ENOENT
+58 error errno -4058
+59 error syscall open
+60 error enoent ENOENT: no such file or directory, open 'E:\Projects\HTML5\wsk-example\-'
+61 error enoent ENOENT: no such file or directory, open 'E:\Projects\HTML5\wsk-example\-'
+61 error enoent This is most likely not a problem with npm itself
+61 error enoent and is related to npm not being able to find a file.
+62 verbose exit [ -4058, true ]
